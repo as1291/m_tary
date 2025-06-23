@@ -27,7 +27,7 @@ router.get('/', auth(), async (req, res) => {
           foreignField: '_id',
           as: 'asset'
       }},
-      { $unwind: '$asset' },
+      // { $unwind: '$asset' }, // comment out for debugging
 
       /* join bases → put result in top‑level "base" */
       { $lookup: {
@@ -36,7 +36,7 @@ router.get('/', auth(), async (req, res) => {
           foreignField: '_id',
           as: 'base'
       }},
-      { $unwind: '$base' }
+      // { $unwind: '$base' } // comment out for debugging
     ];
 
     /* restrict non‑admins to their own base */
@@ -96,7 +96,7 @@ router.post("/", auth(["admin", "logistics_officer"]), async (req, res) => {
     if (!asset || !assignedTo || !assignmentDate)
       return res.status(400).json({ message: "Missing required fields." });
 
-    // Check asset exists & belongs to caller’s base (unless admin)
+    // Check asset exists & belongs to caller's base (unless admin)
     const assetDoc = await Asset.findById(asset).populate("base");
     if (!assetDoc)
       return res.status(400).json({ message: "Invalid asset ID." });
